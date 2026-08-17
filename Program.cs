@@ -27,6 +27,13 @@ namespace IETCD
 
             var app = builder.Build();
 
+            // Apply pending migrations automatically on startup
+            using (var migrationScope = app.Services.CreateScope())
+            {
+                var dbContext = migrationScope.ServiceProvider.GetRequiredService<IETCD.Data.ApplicationDbContext>();
+                await dbContext.Database.MigrateAsync();
+            }
+
             // Seed roles, admin user, categories and tags
             using (var scope = app.Services.CreateScope())
             {
