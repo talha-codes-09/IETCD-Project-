@@ -3,152 +3,455 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - IETCD</title>
+
     <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/IETCD.styles.css" asp-append-version="true" />
 </head>
+
 <body>
+
+    <!-- =========================
+         MAIN NAVBAR
+    ========================== -->
+
     <header>
-        <nav class="navbar navbar-expand-lg" style="background-color: var(--white); border-bottom: 1px solid #e5e7eb;">
+        <nav class="navbar navbar-expand-lg"
+             style="background-color: var(--white); border-bottom: 1px solid #e5e7eb;">
+
             <div class="container-fluid px-4">
-                <button class="btn me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainMenu" style="border: none; font-size: 1.4rem; color: var(--dark);">
+
+                <!-- MENU BUTTON -->
+                <button class="btn me-3"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#mainMenu"
+                        style="border: none; font-size: 1.4rem; color: var(--dark);">
                     &#9776;
                 </button>
 
-                <a class="navbar-brand fw-bold" style="color: var(--primary); letter-spacing: 1px;" asp-area="" asp-controller="Home" asp-action="Index">IETCD</a>
+                <!-- LOGO -->
+                <a class="navbar-brand fw-bold"
+                   style="color: var(--primary); letter-spacing: 1px;"
+                   asp-controller="Home"
+                   asp-action="Index">
+                    IETCD
+                </a>
 
+                <!-- RIGHT SIDE -->
                 <div class="ms-auto d-flex gap-2">
-                    <a class="btn btn-sm" style="border: 1px solid var(--primary); color: var(--primary);" asp-area="" asp-controller="Account" asp-action="Login">Log In</a>
-                    <a class="btn btn-sm" style="background-color: var(--accent); color: var(--white);" asp-area="" asp-controller="Account" asp-action="Register">Sign Up</a>
+
+                    <!-- ADMIN LOGIN -->
+                    <a class="btn btn-sm"
+                       href="/Admin/Account/Login"
+                       style="border: 1px solid var(--primary); color: var(--primary);">
+                        Log In
+                    </a>
+
+                    <!-- USER SIGN UP -->
+                    <a class="btn btn-sm"
+                       asp-controller="Account"
+                       asp-action="Register"
+                       style="background-color: var(--accent); color: var(--white);">
+                        Sign Up
+                    </a>
+
                 </div>
+
             </div>
         </nav>
     </header>
 
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="mainMenu" aria-labelledby="mainMenuLabel" style="width: 340px;">
+
+    <!-- =========================
+         SIDE MENU
+    ========================== -->
+
+    <div class="offcanvas offcanvas-start"
+         tabindex="-1"
+         id="mainMenu"
+         aria-labelledby="mainMenuLabel"
+         style="width: 340px;">
+
         <div class="offcanvas-header border-bottom">
-            <h5 class="offcanvas-title fw-bold" id="mainMenuLabel" style="color: var(--primary);">IETCD</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+
+            <h5 class="offcanvas-title fw-bold"
+                id="mainMenuLabel"
+                style="color: var(--primary);">
+                IETCD
+            </h5>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="offcanvas">
+            </button>
+
         </div>
+
+
         <div class="offcanvas-body p-0">
+
             <ul class="list-unstyled mb-0">
 
-                <li class="p-3 border-bottom" style="background-color: var(--light-bg);">
-                    <div class="fw-semibold" style="color: var(--dark);">Learn On The Go With The IETCD App</div>
-                    <a asp-controller="Home" asp-action="ComingSoon" class="btn btn-sm mt-2" style="background-color: var(--primary); color: white;">Get App</a>
+                <!-- APP -->
+                <li class="p-3 border-bottom"
+                    style="background-color: var(--light-bg);">
+
+                    <div class="fw-semibold"
+                         style="color: var(--dark);">
+                        Learn On The Go With The IETCD App
+                    </div>
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="btn btn-sm mt-2"
+                       style="background-color: var(--primary); color: white;">
+                        Get App
+                    </a>
+
                 </li>
 
-                <!-- Updated Explore Courses link -->
+
+                <!-- PUBLIC COURSES -->
                 <li class="border-bottom">
-                    <a href="/Courses" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Courses"
+                       asp-action="Index"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         Explore Courses
+
                     </a>
-                </li>
-                <li class="border-bottom">
-                    <a href="#" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
-                        Earn a Certificate
-                    </a>
-                </li>
-                <li class="border-bottom">
-                    <a href="#" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
-                        Earn a Diploma
-                    </a>
-                </li>
-                <li class="border-bottom">
-                    <a href="#" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
-                        Download Courses
-                        <div class="small text-muted">Learn Offline on the IETCD App</div>
-                    </a>
+
                 </li>
 
+
+                <!-- CERTIFICATE -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
+                        Earn a Certificate
+
+                    </a>
+
+                </li>
+
+
+                <!-- DIPLOMA -->
+                <li class="border-bottom">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
+                        Earn a Diploma
+
+                    </a>
+
+                </li>
+
+
+                <!-- DOWNLOAD -->
+                <li class="border-bottom">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
+                        Download Courses
+
+                        <div class="small text-muted">
+                            Learn Offline on the IETCD App
+                        </div>
+
+                    </a>
+
+                </li>
+
+
+                <!-- DISCOVER CAREERS -->
+                <li class="border-bottom">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         Discover Careers
+
                     </a>
+
                 </li>
+
+
+                <!-- RESUME BUILDER -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         Resumé Builder
-                        <div class="small text-muted">Create your professional resume</div>
+
+                        <div class="small text-muted">
+                            Create your professional resume
+                        </div>
+
                     </a>
+
                 </li>
+
+
+                <!-- CAREER READY PLAN -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
-                        Career Ready Plan <span class="badge float-end" style="background-color: var(--accent); color: white;">New</span>
-                        <div class="small text-muted">Plan to achieve your career goals</div>
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
+                        Career Ready Plan
+
+                        <span class="badge float-end"
+                              style="background-color: var(--accent); color: white;">
+                            New
+                        </span>
+
+                        <div class="small text-muted">
+                            Plan to achieve your career goals
+                        </div>
+
                     </a>
+
                 </li>
+
+
+                <!-- PSYCHOMETRIC TEST -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         Psychometric Tests
-                        <div class="small text-muted">Assess your strengths and weaknesses</div>
+
+                        <div class="small text-muted">
+                            Assess your strengths and weaknesses
+                        </div>
+
                     </a>
+
                 </li>
+
+
+                <!-- ENGLISH TEST -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         English Proficiency Test
-                        <div class="small text-muted">Demonstrate your English language skills</div>
+
+                        <div class="small text-muted">
+                            Demonstrate your English language skills
+                        </div>
+
                     </a>
+
                 </li>
+
+
+                <!-- BUSINESS -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         IETCD for Business
-                        <div class="small text-muted">Upskill & empower your team for free</div>
+
+                        <div class="small text-muted">
+                            Upskill & empower your team for free
+                        </div>
+
                     </a>
+
                 </li>
+
+
+                <!-- WEBINARS -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         Register for upcoming webinars
+
                     </a>
+
                 </li>
+
+
+                <!-- PREMIUM -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         IETCD Premium
-                        <div class="small text-muted">Go ads-free and learn without distractions</div>
+
+                        <div class="small text-muted">
+                            Go ads-free and learn without distractions
+                        </div>
+
                     </a>
+
                 </li>
+
+
+                <!-- GIFT CARDS -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
-                        Gift Cards <span class="badge float-end" style="background-color: var(--accent); color: white;">New</span>
-                        <div class="small text-muted">Purchase a certificate for others</div>
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
+                        Gift Cards
+
+                        <span class="badge float-end"
+                              style="background-color: var(--accent); color: white;">
+                            New
+                        </span>
+
+                        <div class="small text-muted">
+                            Purchase a certificate for others
+                        </div>
+
                     </a>
+
                 </li>
+
+
+                <!-- GRADUATE PROFILES -->
                 <li class="border-bottom">
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         IETCD Graduate Profiles
-                        <div class="small text-muted">Read graduate success stories</div>
+
+                        <div class="small text-muted">
+                            Read graduate success stories
+                        </div>
+
                     </a>
+
                 </li>
+
+
+                <!-- BLOG -->
                 <li>
-                    <a asp-controller="Home" asp-action="ComingSoon" class="d-block p-3 text-decoration-none" style="color: var(--dark);">
+
+                    <a asp-controller="Home"
+                       asp-action="ComingSoon"
+                       class="d-block p-3 text-decoration-none"
+                       style="color: var(--dark);">
+
                         IETCD Blog
-                        <div class="small text-muted">News, insights, tips and stories from IETCD</div>
+
+                        <div class="small text-muted">
+                            News, insights, tips and stories from IETCD
+                        </div>
+
                     </a>
+
                 </li>
+
             </ul>
+
+
+            <!-- FOOTER TEXT -->
 
             <div class="p-3 text-center text-muted small border-top mt-2">
                 ietcd.com
             </div>
+
         </div>
+
     </div>
+
+
+    <!-- =========================
+         PAGE CONTENT
+    ========================== -->
 
     <div class="container">
+
         <main role="main" class="pb-3">
+
             @RenderBody()
+
         </main>
+
     </div>
 
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
     <footer class="border-top footer text-muted">
+
         <div class="container">
-            &copy; 2026 - IETCD - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+            &copy; 2026 - IETCD -
+
+            <a asp-controller="Home"
+               asp-action="Privacy">
+                Privacy
+            </a>
+
         </div>
+
     </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true">
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

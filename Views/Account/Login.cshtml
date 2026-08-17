@@ -1,19 +1,83 @@
 ﻿@{
-    ViewData["Title"] = "Admin Login";
-    Layout = null;
+    ViewData["Title"] = "Login";
 }
 
-<h2>Admin Login</h2>
+<div class="container py-5">
 
-<form method="post" action="/Admin/Account/Login">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="mb-3">
-        <label>Email</label>
-        <input type="email" name="email" class="form-control" required />
+    <div class="row justify-content-center">
+
+        <div class="col-md-5">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body p-4">
+
+                    <h2 class="fw-bold mb-2">
+                        Login
+                    </h2>
+
+                    <p class="text-muted">
+                        Sign in to your IETCD account.
+                    </p>
+
+                    <div asp-validation-summary="All"
+                         class="text-danger mb-3">
+                    </div>
+
+                    <form method="post"
+                          action="/Account/Login">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Email
+                            </label>
+
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   required />
+                        </div>
+
+                        <button type="submit"
+                                class="btn w-100"
+                                style="background-color:var(--primary);color:white;">
+                            Login
+                        </button>
+
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="/Account/Register">
+                            Create an account
+                        </a>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <a href="/Admin/Account/Login"
+                           class="small text-muted">
+                            Admin Login
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-    <div class="mb-3">
-        <label>Password</label>
-        <input type="password" name="password" class="form-control" required />
-    </div>
-    <button type="submit" class="btn btn-dark">Login</button>
-</form>
+
+</div>

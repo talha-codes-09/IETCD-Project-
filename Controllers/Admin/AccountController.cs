@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace IETCD.Controllers.Admin
 {
@@ -10,39 +10,82 @@ namespace IETCD.Controllers.Admin
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
         [HttpGet("Login")]
+        [AllowAnonymous]
         public IActionResult Login()
         {
+            if (User.Identity?.IsAuthenticated == true &&
+                User.IsInRole("Admin"))
+            {
+                return Redirect("/Admin/Dashboard");
+            }
+
             return View("~/Views/Admin/Account/Login.cshtml");
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(string email, string password)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(
+            string email,
+            string password)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-
-            if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+            if (string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(password))
             {
-                var result = await _signInManager.PasswordSignInAsync(email, password, isPersistent: false, lockoutOnFailure: false);
-                if (result.Succeeded)
-                    return RedirectToAction("Index", "Courses");
+                ModelState.AddModelError(
+                    "",
+                    "Email and password are required.");
+
+                return View("~/Views/Admin/Account/Login.cshtml");
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid admin credentials.");
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null ||
+                !await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Invalid admin credentials.");
+
+                return View("~/Views/Admin/Account/Login.cshtml");
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(
+                user.UserName!,
+                password,
+                false,
+                false);
+
+            if (result.Succeeded)
+            {
+                return Redirect("/Admin/Dashboard");
+            }
+
+            ModelState.AddModelError(
+                "",
+                "Invalid admin credentials.");
+
             return View("~/Views/Admin/Account/Login.cshtml");
         }
 
         [HttpPost("Logout")]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login");
+
+            return Redirect("/Admin/Account/Login");
         }
     }
-} 
+}

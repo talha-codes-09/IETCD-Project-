@@ -1,89 +1,172 @@
-﻿@model List<IETCD.Models.Category>
+﻿@model IEnumerable<IETCD.Models.Course>
+
 @{
-    ViewData["Title"] = "Explore Courses";
+    ViewData["Title"] = "Manage Courses";
 }
 
-<div class="d-flex justify-content-between align-items-center mt-4 mb-4">
-    <h2 class="fw-bold" style="color: var(--dark);">Explore Courses</h2>
-    <a asp-controller="Home" asp-action="ComingSoon" class="btn" style="background-color: var(--primary); color: white;">Get App Now</a>
-</div>
+<div class="container-fluid py-4">
 
-<div class="row g-3 mb-5" id="categoryGrid">
-    @foreach (var cat in Model)
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                Manage Courses
+            </h1>
+
+            <p class="text-muted mb-0">
+                Create and manage courses
+            </p>
+        </div>
+
+        <a href="/Admin/Courses/Create"
+           class="btn"
+           style="background-color: var(--primary); color:white;">
+            + Create Course
+        </a>
+
+    </div>
+
+    @if (TempData["Success"] != null)
     {
-        <div class="col-6 col-md-4 col-lg-3">
-            <div class="category-card p-3 h-100" data-category-id="@cat.Id" style="border: 1px solid #E5E7EB; border-radius: 10px; cursor: pointer; transition: all 0.15s ease;">
-                <div class="fw-semibold" style="color: var(--dark);">@cat.Name</div>
-                <div class="small text-muted">@cat.Tags.Count Courses</div>
-            </div>
+        <div class="alert alert-success">
+            @TempData["Success"]
         </div>
     }
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Instructor</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var course in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        @course.Title
+                                    </strong>
+
+                                    <div class="small text-muted">
+                                        @course.Description
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @course.InstructorName
+                                </td>
+
+                                <td>
+                                    @course.Price
+                                </td>
+
+                                <td>
+                                    @course.Category?.Name
+                                </td>
+
+                                <td>
+
+                                    @if (course.IsPublished)
+                                    {
+                                        <span class="badge bg-success">
+                                            Published
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            Draft
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex gap-2">
+
+                                        <a href="/Admin/Courses/Edit/@course.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Edit
+                                        </a>
+
+                                        <form method="post"
+                                              action="/Admin/Courses/TogglePublish/@course.Id">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-success">
+                                                @(course.IsPublished
+                                                    ? "Unpublish"
+                                                    : "Publish")
+                                            </button>
+
+                                        </form>
+
+                                        <form method="post"
+                                              action="/Admin/Courses/Delete/@course.Id"
+                                              onsubmit="return confirm('Delete this course?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger">
+                                                Delete
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+
+                    <h5>No courses yet</h5>
+
+                    <p class="text-muted">
+                        Create your first course.
+                    </p>
+
+                    <a href="/Admin/Courses/Create"
+                       class="btn"
+                       style="background-color: var(--primary); color:white;">
+                        Create Course
+                    </a>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
 </div>
-
-<div id="tagSection" style="display:none;">
-    <h4 class="fw-bold mb-3" id="tagSectionTitle" style="color: var(--dark);"></h4>
-    <div class="d-flex flex-wrap gap-2" id="tagList"></div>
-</div>
-
-<style>
-    .category-card:hover {
-        border-color: var(--primary) !important;
-        box-shadow: 0 4px 12px rgba(13, 115, 100, 0.12);
-    }
-
-    .category-card.active {
-        border-color: var(--primary) !important;
-        background-color: var(--light-bg);
-    }
-
-    .tag-pill {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 20px;
-        border: 1px solid #E5E7EB;
-        color: var(--dark);
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: all 0.15s ease;
-    }
-
-        .tag-pill:hover {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-</style>
-
-<script>
-    const categoryData = {
-        @foreach (var cat in Model)
-        {
-                @:@cat.Id: { name: "@cat.Name", tags: [@Html.Raw(string.Join(",", cat.Tags.Select(t => $"\"{t.Name.Replace("\"", "\\\"")}\"")))] },
-        }
-    };
-
-    document.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', function () {
-            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-
-            const id = this.getAttribute('data-category-id');
-            const data = categoryData[id];
-
-            document.getElementById('tagSectionTitle').textContent = data.name + " Courses";
-            const tagList = document.getElementById('tagList');
-            tagList.innerHTML = '';
-
-            data.tags.forEach(tagName => {
-                const a = document.createElement('a');
-                a.href = '@Url.Action("ComingSoon", "Home")';
-                a.className = 'tag-pill';
-                a.textContent = tagName;
-                tagList.appendChild(a);
-            });
-
-            document.getElementById('tagSection').style.display = 'block';
-            document.getElementById('tagSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-    });
-</script>

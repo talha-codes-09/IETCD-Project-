@@ -1,0 +1,523 @@
+﻿@model IETCD.Models.Course
+
+@{
+    ViewData["Title"] = "Create Course";
+
+    var categories = ViewBag.Categories as IEnumerable<IETCD.Models.Category>;
+    var tags = ViewBag.Tags as IEnumerable<IETCD.Models.Tag>;
+}
+
+
+<div class="create-course-page">
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+            <h1>Create Course</h1>
+
+            <p>
+                Add a new course to the IETCD platform.
+            </p>
+        </div>
+
+        <a href="/Admin/Courses"
+           class="back-button">
+            ← Back to Courses
+        </a>
+
+    </div>
+
+
+    <!-- FORM CARD -->
+
+    <div class="form-card">
+
+        <form method="post"
+              action="/Admin/Courses/Create">
+
+            @Html.AntiForgeryToken()
+
+
+            <!-- VALIDATION -->
+
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary">
+            </div>
+
+
+            <!-- TITLE -->
+
+            <div class="form-group">
+
+                <label asp-for="Title">
+                    Course Title
+                </label>
+
+                <input asp-for="Title"
+                       class="form-control"
+                       placeholder="Enter course title" />
+
+                <span asp-validation-for="Title"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+                <label asp-for="Description">
+                    Description
+                </label>
+
+                <textarea asp-for="Description"
+                          class="form-control"
+                          rows="5"
+                          placeholder="Enter course description">
+                </textarea>
+
+                <span asp-validation-for="Description"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+            <!-- TWO COLUMNS -->
+
+            <div class="form-row">
+
+
+                <!-- PRICE -->
+
+                <div class="form-group">
+
+                    <label asp-for="Price">
+                        Price
+                    </label>
+
+                    <input asp-for="Price"
+                           type="number"
+                           step="0.01"
+                           class="form-control"
+                           placeholder="0.00" />
+
+                    <span asp-validation-for="Price"
+                          class="validation-error">
+                    </span>
+
+                </div>
+
+
+                <!-- INSTRUCTOR -->
+
+                <div class="form-group">
+
+                    <label asp-for="InstructorName">
+                        Instructor Name
+                    </label>
+
+                    <input asp-for="InstructorName"
+                           class="form-control"
+                           placeholder="Enter instructor name" />
+
+                    <span asp-validation-for="InstructorName"
+                          class="validation-error">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div class="form-group">
+
+                <label asp-for="CategoryId">
+                    Category
+                </label>
+
+                <select asp-for="CategoryId"
+                        class="form-control">
+
+                    <option value="">
+                        -- Select Category --
+                    </option>
+
+                    @if (categories != null)
+                    {
+                        foreach (var category in categories)
+                        {
+                            <option value="@category.Id">
+                                @category.Name
+                            </option>
+                        }
+                    }
+
+                </select>
+
+                <span asp-validation-for="CategoryId"
+                      class="validation-error">
+                </span>
+
+            </div>
+
+
+            <!-- THUMBNAIL -->
+
+            <div class="form-group">
+
+                <label asp-for="ThumbnailUrl">
+                    Thumbnail URL
+                </label>
+
+                <input asp-for="ThumbnailUrl"
+                       class="form-control"
+                       placeholder="https://example.com/course-image.jpg" />
+
+                <span asp-validation-for="ThumbnailUrl"
+                      class="validation-error">
+                </span>
+
+                <div class="help-text">
+                    Add the URL of the course thumbnail image.
+                </div>
+
+            </div>
+
+
+            <!-- TAGS -->
+
+            <div class="form-group">
+
+                <label>
+                    Course Tags
+                </label>
+
+                <div class="tag-container">
+
+                    @if (tags != null && tags.Any())
+                    {
+                        foreach (var tag in tags)
+                        {
+                            <label class="tag-option">
+
+                                <input type="checkbox"
+                                       name="selectedTagIds"
+                                       value="@tag.Id" />
+
+                                <span>
+                                    @tag.Name
+                                </span>
+
+                            </label>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-tags">
+                            No tags available.
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- PUBLISH -->
+
+            <div class="publish-option">
+
+                <input asp-for="IsPublished"
+                       type="checkbox"
+                       id="isPublished" />
+
+                <label for="isPublished">
+                    Publish this course immediately
+                </label>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="form-actions">
+
+                <a href="/Admin/Courses"
+                   class="cancel-button">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="save-button">
+                    Create Course
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .create-course-page {
+        padding: 40px 0 70px;
+    }
+
+
+    /* HEADER */
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .page-header p {
+            margin: 8px 0 0;
+            color: #64748B;
+        }
+
+
+    /* BACK */
+
+    .back-button {
+        border: 1px solid #CBD5E1;
+        color: #475569;
+        padding: 10px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .back-button:hover {
+            background: #F8FAFC;
+            color: var(--dark);
+        }
+
+
+    /* FORM */
+
+    .form-card {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 35px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+        max-width: 900px;
+        margin: auto;
+    }
+
+
+    /* FORM GROUP */
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 7px;
+        }
+
+
+    /* INPUT */
+
+    .form-control {
+        width: 100%;
+        border: 1px solid #CBD5E1;
+        border-radius: 8px;
+        padding: 11px 13px;
+        font-size: 1rem;
+        background: white;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13,115,100,0.12);
+            outline: none;
+        }
+
+
+    /* TWO COLUMNS */
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+
+    /* HELP */
+
+    .help-text {
+        margin-top: 6px;
+        font-size: 0.85rem;
+        color: #64748B;
+    }
+
+
+    /* TAGS */
+
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .tag-option {
+        display: flex !important;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid #CBD5E1;
+        padding: 8px 13px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 500 !important;
+        color: #475569 !important;
+        margin: 0 !important;
+    }
+
+        .tag-option:hover {
+            border-color: var(--primary);
+        }
+
+        .tag-option input {
+            accent-color: var(--primary);
+        }
+
+
+    .no-tags {
+        color: #94A3B8;
+        font-size: 0.9rem;
+    }
+
+
+    /* PUBLISH */
+
+    .publish-option {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 15px;
+        background: #F8FAFC;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+        .publish-option input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .publish-option label {
+            margin: 0;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+
+    /* ACTIONS */
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        border-top: 1px solid #E5E7EB;
+        padding-top: 25px;
+    }
+
+
+    .cancel-button {
+        padding: 11px 22px;
+        border: 1px solid #CBD5E1;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #475569;
+        font-weight: 600;
+    }
+
+        .cancel-button:hover {
+            background: #F8FAFC;
+            color: var(--dark);
+        }
+
+
+    .save-button {
+        padding: 11px 25px;
+        border: none;
+        border-radius: 8px;
+        background: var(--primary);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .save-button:hover {
+            background: var(--primary-dark);
+        }
+
+
+    /* VALIDATION */
+
+    .validation-summary {
+        color: #DC2626;
+        margin-bottom: 20px;
+    }
+
+    .validation-error {
+        color: #DC2626;
+        font-size: 0.85rem;
+    }
+
+
+    /* MOBILE */
+
+    @@media (max-width: 700px) {
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .form-card {
+            padding: 22px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+</style>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

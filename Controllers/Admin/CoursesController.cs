@@ -17,49 +17,89 @@ namespace IETCD.Controllers.Admin
             _context = context;
         }
 
+        // =========================
+        // ADMIN COURSE DASHBOARD
+        // =========================
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {
             var courses = await _context.Courses
                 .Include(c => c.Category)
+                .Include(c => c.CourseTags)
+                    .ThenInclude(ct => ct.Tag)
                 .OrderByDescending(c => c.CreatedDate)
                 .ToListAsync();
+
             return View("~/Views/Admin/Courses/Index.cshtml", courses);
         }
 
+        // =========================
+        // CREATE COURSE - GET
+        // =========================
         [HttpGet("Create")]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
-            ViewBag.Tags = await _context.Tags.OrderBy(t => t.Name).ToListAsync();
+            ViewBag.Categories = await _context.Categories
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            ViewBag.Tags = await _context.Tags
+                .OrderBy(t => t.Name)
+                .ToListAsync();
+
             return View("~/Views/Admin/Courses/Create.cshtml");
         }
 
+        // =========================
+        // CREATE COURSE - POST
+        // =========================
         [HttpPost("Create")]
-        public async Task<IActionResult> Create(Course course, int[] selectedTagIds)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(
+            Course course,
+            int[] selectedTagIds)
         {
             if (ModelState.IsValid)
             {
+                course.CreatedDate = DateTime.UtcNow;
+
                 _context.Courses.Add(course);
                 await _context.SaveChangesAsync();
 
-                if (selectedTagIds != null)
+                if (selectedTagIds != null && selectedTagIds.Any())
                 {
                     foreach (var tagId in selectedTagIds)
                     {
-                        _context.CourseTags.Add(new CourseTag { CourseId = course.Id, TagId = tagId });
+                        _context.CourseTags.Add(
+                            new CourseTag
+                            {
+                                CourseId = course.Id,
+                                TagId = tagId
+                            });
                     }
+
                     await _context.SaveChangesAsync();
                 }
 
-                return RedirectToAction("Index");
+                TempData["Success"] = "Course created successfully!";
+
+                return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
-            ViewBag.Tags = await _context.Tags.OrderBy(t => t.Name).ToListAsync();
+            ViewBag.Categories = await _context.Categories
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            ViewBag.Tags = await _context.Tags
+                .OrderBy(t => t.Name)
+                .ToListAsync();
+
             return View("~/Views/Admin/Courses/Create.cshtml", course);
         }
 
+        // =========================
+        // EDIT COURSE - GET
+        // =========================
         [HttpGet("Edit/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -67,23 +107,40 @@ namespace IETCD.Controllers.Admin
                 .Include(c => c.CourseTags)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (course == null) return NotFound();
+            if (course == null)
+                return NotFound();
 
-            ViewBag.Categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
-            ViewBag.Tags = await _context.Tags.OrderBy(t => t.Name).ToListAsync();
-            ViewBag.SelectedTagIds = course.CourseTags.Select(ct => ct.TagId).ToList();
+            ViewBag.Categories = await _context.Categories
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            ViewBag.Tags = await _context.Tags
+                .OrderBy(t => t.Name)
+                .ToListAsync();
+
+            ViewBag.SelectedTagIds = course.CourseTags
+                .Select(ct => ct.TagId)
+                .ToList();
 
             return View("~/Views/Admin/Courses/Edit.cshtml", course);
         }
 
+        // =========================
+        // EDIT COURSE - POST
+        // =========================
         [HttpPost("Edit/{id}")]
-        public async Task<IActionResult> Edit(int id, Course updatedCourse, int[] selectedTagIds)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(
+            int id,
+            Course updatedCourse,
+            int[] selectedTagIds)
         {
             var course = await _context.Courses
                 .Include(c => c.CourseTags)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (course == null) return NotFound();
+            if (course == null)
+                return NotFound();
 
             course.Title = updatedCourse.Title;
             course.Description = updatedCourse.Description;
@@ -94,28 +151,71 @@ namespace IETCD.Controllers.Admin
             course.CategoryId = updatedCourse.CategoryId;
 
             _context.CourseTags.RemoveRange(course.CourseTags);
-            if (selectedTagIds != null)
+
+            if (selectedTagIds != null && selectedTagIds.Any())
             {
                 foreach (var tagId in selectedTagIds)
                 {
-                    _context.CourseTags.Add(new CourseTag { CourseId = course.Id, TagId = tagId });
+                    _context.CourseTags.Add(
+                        new CourseTag
+                        {
+                            CourseId = course.Id,
+                            TagId = tagId
+                        });
                 }
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+
+            TempData["Success"] = "Course updated successfully!";
+
+            return RedirectToAction(nameof(Index));
         }
 
+        // =========================
+        // DELETE COURSE
+        // =========================
         [HttpPost("Delete/{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _context.Courses
+                .Include(c => c.CourseTags)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (course != null)
             {
+                _context.CourseTags.RemoveRange(course.CourseTags);
                 _context.Courses.Remove(course);
+
                 await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Course deleted successfully!";
             }
-            return RedirectToAction("Index");
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // =========================
+        // PUBLISH / UNPUBLISH
+        // =========================
+        [HttpPost("TogglePublish/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TogglePublish(int id)
+        {
+            var course = await _context.Courses.FindAsync(id);
+
+            if (course != null)
+            {
+                course.IsPublished = !course.IsPublished;
+
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] =
+                    $"Course {(course.IsPublished ? "published" : "unpublished")} successfully!";
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -60,10 +60,10 @@
                 border: 1px solid #E5E7EB;
             }
 
-            .form-control:focus {
-                border-color: var(--primary);
-                box-shadow: 0 0 0 3px rgba(13, 115, 100, 0.15);
-            }
+                .form-control:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(13, 115, 100, 0.15);
+                }
 
             .btn-admin-login {
                 background-color: var(--primary);
@@ -77,10 +77,10 @@
                 transition: background-color 0.15s ease;
             }
 
-            .btn-admin-login:hover {
-                background-color: var(--primary-dark);
-                color: var(--white);
-            }
+                .btn-admin-login:hover {
+                    background-color: var(--primary-dark);
+                    color: var(--white);
+                }
 
             .form-label {
                 font-size: 0.85rem;
@@ -103,6 +103,7 @@
             }
     </style>
 </head>
+
 <body>
     <div class="admin-login-card">
         <div class="text-center">
@@ -115,19 +116,35 @@
         <div asp-validation-summary="All" class="text-danger small mb-3"></div>
 
         <form method="post" action="/Admin/Account/Login">
+            @Html.AntiForgeryToken()
+
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" placeholder="admin@ietcd.com" required />
+                <input type="email"
+                       name="email"
+                       class="form-control"
+                       placeholder="admin@ietcd.com"
+                       required />
             </div>
+
             <div class="mb-3">
                 <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" placeholder="••••••••" required />
+                <input type="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="••••••••"
+                       required />
             </div>
-            <button type="submit" class="btn btn-admin-login">Sign In</button>
+
+            <button type="submit" class="btn btn-admin-login">
+                Sign In
+            </button>
         </form>
 
         <div class="text-center mt-4">
-            <a href="/" class="text-decoration-none small" style="color:#9CA3AF;">&larr; Back to website</a>
+            <a href="/" class="text-decoration-none small" style="color:#9CA3AF;">
+                &larr; Back to website
+            </a>
         </div>
     </div>
 </body>
