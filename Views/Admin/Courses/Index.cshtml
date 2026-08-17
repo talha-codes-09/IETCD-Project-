@@ -1,0 +1,89 @@
+﻿@model List<IETCD.Models.Category>
+@{
+    ViewData["Title"] = "Explore Courses";
+}
+
+<div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+    <h2 class="fw-bold" style="color: var(--dark);">Explore Courses</h2>
+    <a asp-controller="Home" asp-action="ComingSoon" class="btn" style="background-color: var(--primary); color: white;">Get App Now</a>
+</div>
+
+<div class="row g-3 mb-5" id="categoryGrid">
+    @foreach (var cat in Model)
+    {
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="category-card p-3 h-100" data-category-id="@cat.Id" style="border: 1px solid #E5E7EB; border-radius: 10px; cursor: pointer; transition: all 0.15s ease;">
+                <div class="fw-semibold" style="color: var(--dark);">@cat.Name</div>
+                <div class="small text-muted">@cat.Tags.Count Courses</div>
+            </div>
+        </div>
+    }
+</div>
+
+<div id="tagSection" style="display:none;">
+    <h4 class="fw-bold mb-3" id="tagSectionTitle" style="color: var(--dark);"></h4>
+    <div class="d-flex flex-wrap gap-2" id="tagList"></div>
+</div>
+
+<style>
+    .category-card:hover {
+        border-color: var(--primary) !important;
+        box-shadow: 0 4px 12px rgba(13, 115, 100, 0.12);
+    }
+
+    .category-card.active {
+        border-color: var(--primary) !important;
+        background-color: var(--light-bg);
+    }
+
+    .tag-pill {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid #E5E7EB;
+        color: var(--dark);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.15s ease;
+    }
+
+        .tag-pill:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+</style>
+
+<script>
+    const categoryData = {
+        @foreach (var cat in Model)
+        {
+                @:@cat.Id: { name: "@cat.Name", tags: [@Html.Raw(string.Join(",", cat.Tags.Select(t => $"\"{t.Name.Replace("\"", "\\\"")}\"")))] },
+        }
+    };
+
+    document.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', function () {
+            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+
+            const id = this.getAttribute('data-category-id');
+            const data = categoryData[id];
+
+            document.getElementById('tagSectionTitle').textContent = data.name + " Courses";
+            const tagList = document.getElementById('tagList');
+            tagList.innerHTML = '';
+
+            data.tags.forEach(tagName => {
+                const a = document.createElement('a');
+                a.href = '@Url.Action("ComingSoon", "Home")';
+                a.className = 'tag-pill';
+                a.textContent = tagName;
+                tagList.appendChild(a);
+            });
+
+            document.getElementById('tagSection').style.display = 'block';
+            document.getElementById('tagSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    });
+</script>

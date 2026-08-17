@@ -1,0 +1,36 @@
+﻿@model IETCD.Models.Course
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="small text-muted mb-2">@Model.Category?.Name</div>
+        <h2 class="fw-bold" style="color: var(--dark);">@Model.Title</h2>
+        <p class="text-muted">By @Model.InstructorName</p>
+
+        <img src="@(string.IsNullOrEmpty(Model.ThumbnailUrl) ? "https://placehold.co/800x400" : Model.ThumbnailUrl)" class="img-fluid rounded mb-4" alt="@Model.Title" />
+
+        <h5 class="fw-bold">About this course</h5>
+        <p>@Model.Description</p>
+
+        @if (Model.CourseTags != null && Model.CourseTags.Any())
+        {
+            <h6 class="fw-bold mt-4">Topics covered</h6>
+            <div>
+                @foreach (var ct in Model.CourseTags)
+                {
+                    <span class="badge me-1 mb-1" style="background-color: var(--light-bg); color: var(--dark); border: 1px solid #E5E7EB;">@ct.Tag?.Name</span>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4">
+        <div class="p-4 rounded" style="background-color: var(--light-bg); border: 1px solid #E5E7EB;">
+            <div class="fw-bold fs-4 mb-3" style="color: var(--primary);">Rs. @Model.Price</div>
+            <button class="btn w-100" style="background-color: var(--accent); color: white;" disabled>Enroll Now (coming soon)</button>
+            <div class="small text-muted mt-2 text-center">Payments launching soon</div>
+        </div>
+    </div>
+</div>

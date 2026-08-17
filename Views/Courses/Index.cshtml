@@ -1,0 +1,109 @@
+﻿@model List<IETCD.Models.Course>
+@{
+    ViewData["Title"] = "Explore Courses";
+    var categories = (List<IETCD.Models.Category>)ViewBag.Categories;
+    var selectedCategoryId = ViewBag.SelectedCategoryId as int?;
+    var selectedCategory = selectedCategoryId.HasValue ? categories.First(c => c.Id == selectedCategoryId) : null;
+}
+
+<div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+    <h2 class="fw-bold" style="color: var(--dark);">Explore Courses</h2>
+    <a asp-controller="Home" asp-action="ComingSoon" class="btn" style="background-color: var(--primary); color: white;">Get App Now</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-3">
+        <a href="/Courses" class="text-decoration-none">
+            <div class="category-card p-3 h-100 @(selectedCategoryId == null ? "active" : "")" style="border: 1px solid #E5E7EB; border-radius: 10px;">
+                <div class="fw-semibold" style="color: var(--dark);">All Categories</div>
+            </div>
+        </a>
+    </div>
+    @foreach (var cat in categories)
+    {
+        <div class="col-6 col-md-4 col-lg-3">
+            <a href="/Courses?categoryId=@cat.Id" class="text-decoration-none">
+                <div class="category-card p-3 h-100 @(selectedCategoryId == cat.Id ? "active" : "")" style="border: 1px solid #E5E7EB; border-radius: 10px;">
+                    <div class="fw-semibold" style="color: var(--dark);">@cat.Name</div>
+                    <div class="small text-muted">@cat.Tags.Count subtopics</div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+@if (selectedCategory != null && selectedCategory.Tags.Any())
+{
+    <div class="mb-5">
+        <h6 class="fw-bold mb-2" style="color: var(--dark);">Browse @selectedCategory.Name subtopics</h6>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var tag in selectedCategory.Tags)
+            {
+                <a asp-controller="Home" asp-action="ComingSoon" class="tag-pill">@tag.Name</a>
+            }
+        </div>
+    </div>
+}
+
+<h4 class="fw-bold mb-3" style="color: var(--dark);">
+    @(selectedCategory != null ? selectedCategory.Name + " Courses" : "All Courses")
+</h4>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No courses available in this category yet.</p>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var course in Model)
+        {
+            <div class="col-md-4">
+                <a href="/Courses/Details/@course.Id" class="text-decoration-none">
+                    <div class="card h-100" style="border: 1px solid #E5E7EB;">
+                        <img src="@(string.IsNullOrEmpty(course.ThumbnailUrl) ? "https://placehold.co/400x220" : course.ThumbnailUrl)" class="card-img-top" alt="@course.Title" style="height: 160px; object-fit: cover;" />
+                        <div class="card-body">
+                            <div class="small text-muted mb-1">@course.Category?.Name</div>
+                            <h6 class="fw-bold" style="color: var(--dark);">@course.Title</h6>
+                            <div class="small text-muted mb-2">@course.InstructorName</div>
+                            <div class="fw-bold" style="color: var(--primary);">Rs. @course.Price</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}
+
+<style>
+    .category-card {
+        transition: all 0.15s ease;
+    }
+
+        .category-card:hover {
+            border-color: var(--primary) !important;
+            box-shadow: 0 4px 12px rgba(13, 115, 100, 0.12);
+        }
+
+        .category-card.active {
+            border-color: var(--primary) !important;
+            background-color: var(--light-bg);
+        }
+
+    .tag-pill {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid #E5E7EB;
+        color: var(--dark);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.15s ease;
+    }
+
+        .tag-pill:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+</style>
