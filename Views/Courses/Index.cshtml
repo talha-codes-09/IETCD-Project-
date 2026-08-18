@@ -1,7 +1,9 @@
-﻿@model List<IETCD.Models.Category>
-
+﻿@model List<IETCD.Models.Course>
 @{
     ViewData["Title"] = "Explore Courses";
+    var categories = (List<IETCD.Models.Category>)ViewBag.Categories;
+    var selectedCategoryId = ViewBag.SelectedCategoryId as int?;
+    var selectedCategory = selectedCategoryId.HasValue ? categories.First(c => c.Id == selectedCategoryId) : null;
 }
 
 <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
@@ -9,33 +11,92 @@
     <a asp-controller="Home" asp-action="ComingSoon" class="btn" style="background-color: var(--primary); color: white;">Get App Now</a>
 </div>
 
-<div class="row g-3 mb-5" id="categoryGrid">
-    @foreach (var cat in Model)
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-3">
+        <a href="/Courses" class="text-decoration-none">
+            <div class="category-card p-3 h-100 @(selectedCategoryId == null ? "active" : "")">
+                <div class="fw-semibold" style="color: var(--dark);">All Categories</div>
+            </div>
+        </a>
+    </div>
+    @foreach (var cat in categories)
     {
         <div class="col-6 col-md-4 col-lg-3">
-            <div class="category-card p-3 h-100" data-category-id="@cat.Id" style="border: 1px solid #E5E7EB; border-radius: 10px; cursor: pointer; transition: all 0.15s ease;">
-                <div class="fw-semibold" style="color: var(--dark);">@cat.Name</div>
-                <div class="small text-muted">@cat.Tags.Count Courses</div>
-            </div>
+            <a href="/Courses?categoryId=@cat.Id" class="text-decoration-none">
+                <div class="category-card p-3 h-100 @(selectedCategoryId == cat.Id ? "active" : "")">
+                    <div class="fw-semibold" style="color: var(--dark);">@cat.Name</div>
+                    <div class="small text-muted">@cat.Tags.Count subtopics</div>
+                </div>
+            </a>
         </div>
     }
 </div>
 
-<div id="tagSection" style="display:none;">
-    <h4 class="fw-bold mb-3" id="tagSectionTitle" style="color: var(--dark);"></h4>
-    <div class="d-flex flex-wrap gap-2" id="tagList"></div>
-</div>
+@if (selectedCategory != null && selectedCategory.Tags.Any())
+{
+    <div class="mb-5">
+        <h6 class="fw-bold mb-2" style="color: var(--dark);">Browse @selectedCategory.Name subtopics</h6>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var tag in selectedCategory.Tags)
+            {
+                <a asp-controller="Home" asp-action="ComingSoon" class="tag-pill">@tag.Name</a>
+            }
+        </div>
+    </div>
+}
+
+<h4 class="fw-bold mb-3" style="color: var(--dark);">
+    @(selectedCategory != null ? selectedCategory.Name + " Courses" : "All Courses")
+</h4>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No courses available in this category yet.</p>
+}
+else
+{
+    <div class="row g-4 mb-5">
+        @foreach (var course in Model)
+        {
+            <div class="col-md-4">
+                <a href="/Courses/Details/@course.Id" class="text-decoration-none">
+                    <div class="course-card h-100">
+                        <div class="course-thumb">
+                            <img src="@(string.IsNullOrEmpty(course.ThumbnailUrl) ? "https://placehold.co/400x220" : course.ThumbnailUrl)" alt="@course.Title" />
+                            <span class="course-price-badge">Rs. @course.Price</span>
+                        </div>
+                        <div class="course-body">
+                            <div class="course-category">@course.Category?.Name</div>
+                            <h6 class="course-title">@course.Title</h6>
+                            <div class="course-instructor">By @course.InstructorName</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+}
 
 <style>
-    .category-card:hover {
-        border-color: var(--primary) !important;
-        box-shadow: 0 4px 12px rgba(13, 115, 100, 0.12);
+    .category-card {
+        border: 1px solid #E5E7EB;
+        border-radius: 10px;
+        border-left: 3px solid transparent;
+        transition: all 0.2s ease;
     }
 
-    .category-card.active {
-        border-color: var(--primary) !important;
-        background-color: var(--light-bg);
-    }
+        .category-card:hover {
+            border-color: var(--primary);
+            border-left-color: var(--primary);
+            box-shadow: 0 6px 16px rgba(13, 115, 100, 0.14);
+            transform: translateY(-2px);
+        }
+
+        .category-card.active {
+            border-color: var(--primary);
+            border-left-color: var(--accent);
+            background-color: var(--light-bg);
+        }
 
     .tag-pill {
         display: inline-block;
@@ -45,46 +106,88 @@
         color: var(--dark);
         text-decoration: none;
         font-size: 0.9rem;
-        transition: all 0.15s ease;
+        transition: all 0.2s ease;
     }
 
         .tag-pill:hover {
             background-color: var(--primary);
             color: white;
             border-color: var(--primary);
+            transform: translateY(-1px);
         }
+
+    .course-card {
+        border: 1px solid #E5E7EB;
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--white);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .course-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(13, 115, 100, 0.18);
+            border-color: var(--primary);
+        }
+
+    .course-thumb {
+        position: relative;
+        height: 170px;
+        overflow: hidden;
+    }
+
+        .course-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+    .course-card:hover .course-thumb img {
+        transform: scale(1.08);
+    }
+
+    .course-price-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: var(--accent);
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 5px 12px;
+        border-radius: 20px;
+        box-shadow: 0 3px 8px rgba(242, 169, 59, 0.4);
+    }
+
+    .course-body {
+        padding: 16px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-category {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--primary);
+        margin-bottom: 6px;
+    }
+
+    .course-title {
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+
+    .course-instructor {
+        font-size: 0.85rem;
+        color: #9CA3AF;
+        margin-top: auto;
+    }
 </style>
-
-<script>
-    const categoryData = {
-        @foreach (var cat in Model)
-        {
-                @:@cat.Id: { name: "@cat.Name", tags: [@Html.Raw(string.Join(",", cat.Tags.Select(t => $"\"{t.Name.Replace("\"", "\\\"")}\"")))] },
-        }
-    };
-
-    document.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', function () {
-            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-
-            const id = this.getAttribute('data-category-id');
-            const data = categoryData[id];
-
-            document.getElementById('tagSectionTitle').textContent = data.name + " Courses";
-            const tagList = document.getElementById('tagList');
-            tagList.innerHTML = '';
-
-            data.tags.forEach(tagName => {
-                const a = document.createElement('a');
-                a.href = '@Url.Action("ComingSoon", "Home")';
-                a.className = 'tag-pill';
-                a.textContent = tagName;
-                tagList.appendChild(a);
-            });
-
-            document.getElementById('tagSection').style.display = 'block';
-            document.getElementById('tagSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-    });
-</script>

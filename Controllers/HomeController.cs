@@ -1,17 +1,43 @@
-using IETCD.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using IETCD.Data;
+using IETCD.Models;
 
 namespace IETCD.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult ComingSoon()
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
         {
-            return View();
+            _context = context;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
+            var categories = await _context.Categories
+                .Include(c => c.Courses)
+                .Include(c => c.Tags)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            var featuredCourses = await _context.Courses
+                .Include(c => c.Category)
+                .Where(c => c.IsPublished)
+                .OrderByDescending(c => c.CreatedDate)
+                .Take(6)
+                .ToListAsync();
+
+            var sampleTags = await _context.Tags
+                .OrderBy(t => Guid.NewGuid())
+                .Take(8)
+                .ToListAsync();
+
+            ViewBag.Categories = categories;
+            ViewBag.FeaturedCourses = featuredCourses;
+            ViewBag.SampleTags = sampleTags;
+
             return View();
         }
 
@@ -20,10 +46,15 @@ namespace IETCD.Controllers
             return View();
         }
 
+        public IActionResult ComingSoon()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
     }
 }

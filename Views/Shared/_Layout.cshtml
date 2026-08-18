@@ -15,9 +15,7 @@
 
 <body>
 
-    <!-- =========================
-         MAIN NAVBAR
-    ========================== -->
+    <!-- ================= NAVBAR ================= -->
 
     <header>
         <nav class="navbar navbar-expand-lg"
@@ -25,39 +23,51 @@
 
             <div class="container-fluid px-4">
 
-                <!-- MENU BUTTON -->
+                <!-- Menu -->
                 <button class="btn me-3"
                         type="button"
                         data-bs-toggle="offcanvas"
                         data-bs-target="#mainMenu"
+                        aria-controls="mainMenu"
                         style="border: none; font-size: 1.4rem; color: var(--dark);">
+
                     &#9776;
+
                 </button>
 
-                <!-- LOGO -->
+
+                <!-- Logo -->
                 <a class="navbar-brand fw-bold"
                    style="color: var(--primary); letter-spacing: 1px;"
                    asp-controller="Home"
                    asp-action="Index">
+
                     IETCD
+
                 </a>
 
-                <!-- RIGHT SIDE -->
+
+                <!-- Right buttons -->
                 <div class="ms-auto d-flex gap-2">
 
-                    <!-- ADMIN LOGIN -->
+                    <!-- Admin Login -->
                     <a class="btn btn-sm"
                        href="/Admin/Account/Login"
                        style="border: 1px solid var(--primary); color: var(--primary);">
+
                         Log In
+
                     </a>
 
-                    <!-- USER SIGN UP -->
+
+                    <!-- Student Sign Up -->
                     <a class="btn btn-sm"
                        asp-controller="Account"
                        asp-action="Register"
                        style="background-color: var(--accent); color: var(--white);">
+
                         Sign Up
+
                     </a>
 
                 </div>
@@ -67,9 +77,7 @@
     </header>
 
 
-    <!-- =========================
-         SIDE MENU
-    ========================== -->
+    <!-- ================= SIDE MENU ================= -->
 
     <div class="offcanvas offcanvas-start"
          tabindex="-1"
@@ -82,12 +90,15 @@
             <h5 class="offcanvas-title fw-bold"
                 id="mainMenuLabel"
                 style="color: var(--primary);">
+
                 IETCD
+
             </h5>
 
             <button type="button"
                     class="btn-close"
-                    data-bs-dismiss="offcanvas">
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close">
             </button>
 
         </div>
@@ -97,30 +108,41 @@
 
             <ul class="list-unstyled mb-0">
 
+
                 <!-- APP -->
+
                 <li class="p-3 border-bottom"
                     style="background-color: var(--light-bg);">
 
                     <div class="fw-semibold"
                          style="color: var(--dark);">
+
                         Learn On The Go With The IETCD App
+
                     </div>
 
                     <a asp-controller="Home"
                        asp-action="ComingSoon"
                        class="btn btn-sm mt-2"
                        style="background-color: var(--primary); color: white;">
+
                         Get App
+
                     </a>
 
                 </li>
 
 
-                <!-- PUBLIC COURSES -->
+                <!-- =====================================
+                     PUBLIC EXPLORE COURSES
+                     THIS IS NOT ADMIN
+                     Hardcoded href to avoid tag-helper
+                     ambiguity with Admin/CoursesController
+                     ===================================== -->
+
                 <li class="border-bottom">
 
-                    <a asp-controller="Courses"
-                       asp-action="Index"
+                    <a href="/Courses"
                        class="d-block p-3 text-decoration-none"
                        style="color: var(--dark);">
 
@@ -132,6 +154,7 @@
 
 
                 <!-- CERTIFICATE -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -147,6 +170,7 @@
 
 
                 <!-- DIPLOMA -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -161,7 +185,8 @@
                 </li>
 
 
-                <!-- DOWNLOAD -->
+                <!-- DOWNLOAD COURSES -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -181,6 +206,7 @@
 
 
                 <!-- DISCOVER CAREERS -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -196,6 +222,7 @@
 
 
                 <!-- RESUME BUILDER -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -214,7 +241,8 @@
                 </li>
 
 
-                <!-- CAREER READY PLAN -->
+                <!-- CAREER READY -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -226,7 +254,9 @@
 
                         <span class="badge float-end"
                               style="background-color: var(--accent); color: white;">
+
                             New
+
                         </span>
 
                         <div class="small text-muted">
@@ -238,7 +268,8 @@
                 </li>
 
 
-                <!-- PSYCHOMETRIC TEST -->
+                <!-- PSYCHOMETRIC -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -257,7 +288,8 @@
                 </li>
 
 
-                <!-- ENGLISH TEST -->
+                <!-- ENGLISH -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -277,6 +309,7 @@
 
 
                 <!-- BUSINESS -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -296,6 +329,7 @@
 
 
                 <!-- WEBINARS -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -311,6 +345,7 @@
 
 
                 <!-- PREMIUM -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -330,6 +365,7 @@
 
 
                 <!-- GIFT CARDS -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -341,7 +377,9 @@
 
                         <span class="badge float-end"
                               style="background-color: var(--accent); color: white;">
+
                             New
+
                         </span>
 
                         <div class="small text-muted">
@@ -354,6 +392,7 @@
 
 
                 <!-- GRADUATE PROFILES -->
+
                 <li class="border-bottom">
 
                     <a asp-controller="Home"
@@ -373,6 +412,7 @@
 
 
                 <!-- BLOG -->
+
                 <li>
 
                     <a asp-controller="Home"
@@ -393,10 +433,12 @@
             </ul>
 
 
-            <!-- FOOTER TEXT -->
+            <!-- SIDE MENU FOOTER -->
 
             <div class="p-3 text-center text-muted small border-top mt-2">
+
                 ietcd.com
+
             </div>
 
         </div>
@@ -404,9 +446,7 @@
     </div>
 
 
-    <!-- =========================
-         PAGE CONTENT
-    ========================== -->
+    <!-- ================= MAIN CONTENT ================= -->
 
     <div class="container">
 
@@ -419,9 +459,7 @@
     </div>
 
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
+    <!-- ================= FOOTER ================= -->
 
     <footer class="border-top footer text-muted">
 
@@ -431,7 +469,9 @@
 
             <a asp-controller="Home"
                asp-action="Privacy">
+
                 Privacy
+
             </a>
 
         </div>
@@ -439,9 +479,7 @@
     </footer>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
+    <!-- ================= SCRIPTS ================= -->
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
