@@ -27,116 +27,230 @@
     <div class="hero-blob hero-blob-2"></div>
 
     <div class="container py-5 position-relative">
-        <h1 class="fw-bold text-white mb-3" style="font-size: 2.6rem; letter-spacing: -0.5px;">Free Online Courses With Certificates &amp; Diplomas</h1>
-        <p class="text-white-50 mb-4" style="font-size: 1.05rem;">What do you want to learn today?</p>
+        <h1 class="fw-bold text-white mb-3" style="font-size: 2.6rem; letter-spacing: -0.5px;">
+            Free Online Courses With Certificates &amp; Diplomas
+        </h1>
+
+        <p class="text-white-50 mb-4" style="font-size: 1.05rem;">
+            What do you want to learn today?
+        </p>
 
         <form asp-controller="Courses" asp-action="Index" method="get" class="mx-auto" style="max-width: 580px;">
             <div class="search-glass">
                 <span class="search-icon">&#128269;</span>
-                <input type="text" class="search-input" placeholder="Search courses, e.g. Digital Marketing" />
-                <button class="search-btn" type="submit">Search</button>
+
+                <input type="text"
+                       name="search"
+                       class="search-input"
+                       placeholder="Search courses, e.g. Digital Marketing" />
+
+                <button class="search-btn" type="submit">
+                    Search
+                </button>
             </div>
         </form>
     </div>
 </section>
 
-<!-- ================= PARTNERS ================= -->
-<section class="py-5 text-center" style="background-color: #FAFBFB;">
-    <div class="text-uppercase small fw-semibold mb-2" style="color: var(--primary); letter-spacing: 2px;">Trusted Partners</div>
-    <h4 class="fw-bold mb-5" style="color: var(--dark);">Learn From World Leading Experts</h4>
-    <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
-        @for (int i = 0; i < partners.Length; i++)
+
+<!-- ================= PARTNERS / LOGO BAR ================= -->
+<section class="partner-section">
+
+    <div class="text-center mb-4">
+        <div class="text-uppercase small fw-semibold mb-2"
+             style="color: var(--primary); letter-spacing: 2px;">
+            Trusted Partners
+        </div>
+
+        <h4 class="fw-bold mb-0" style="color: var(--dark);">
+            Learn From World Leading Experts
+        </h4>
+    </div>
+
+    <div class="partner-logo-bar">
+
+        @foreach (var partner in partners)
         {
-            <div class="partner-card">
-                <div class="partner-mark" style="background-color: @partnerColors[i % partnerColors.Length];">
-                    @partners[i].Substring(0, 1)
-                </div>
-                <div class="partner-name">@partners[i]</div>
+            <div class="partner-logo">
+                @partner
             </div>
         }
+
     </div>
+
 </section>
+
 
 <!-- ================= CATEGORIES (colored panel) ================= -->
 <section class="py-5 px-4 my-5 category-panel">
-    <h3 class="fw-bold text-white text-center mb-1">Explore Free Courses</h3>
-    <p class="text-white-50 text-center mb-4">Browse by category to find what fits you</p>
+    <h3 class="fw-bold text-white text-center mb-1">
+        Explore Free Courses
+    </h3>
+
+    <p class="text-white-50 text-center mb-4">
+        Browse by category to find what fits you
+    </p>
 
     <div class="row g-3">
+
         @foreach (var cat in categories)
         {
-            var icon = categoryIcons.ContainsKey(cat.Name) ? categoryIcons[cat.Name] : "&#128218;";
+            var icon = categoryIcons.ContainsKey(cat.Name)
+                ? categoryIcons[cat.Name]
+                : "&#128218;";
+
             <div class="col-6 col-md-4 col-lg-3">
+
                 <a href="/Courses?categoryId=@cat.Id" class="text-decoration-none">
+
                     <div class="category-box">
-                        <div class="category-icon">@Html.Raw(icon)</div>
-                        <div class="fw-semibold" style="color: var(--dark);">@cat.Name</div>
-                        <div class="small text-muted">@cat.Courses.Count(c => c.IsPublished) Courses &rarr;</div>
+
+                        <div class="category-icon">
+                            @Html.Raw(icon)
+                        </div>
+
+                        <div class="fw-semibold" style="color: var(--dark);">
+                            @cat.Name
+                        </div>
+
+                        <div class="small text-muted">
+                            @cat.Courses.Count(c => c.IsPublished) Courses &rarr;
+                        </div>
+
                     </div>
+
                 </a>
+
             </div>
         }
+
     </div>
 </section>
 
+
 <!-- ================= FEATURED COURSES ================= -->
 <section class="py-5">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
+
         <div>
-            <div class="text-uppercase small fw-semibold mb-1" style="color: var(--primary); letter-spacing: 2px;">Fresh Picks</div>
-            <h3 class="fw-bold m-0" style="color: var(--dark);">Featured Courses</h3>
+
+            <div class="text-uppercase small fw-semibold mb-1"
+                 style="color: var(--primary); letter-spacing: 2px;">
+                Fresh Picks
+            </div>
+
+            <h3 class="fw-bold m-0" style="color: var(--dark);">
+                Featured Courses
+            </h3>
+
         </div>
-        <a href="/Courses" class="fw-semibold text-decoration-none" style="color: var(--primary);">View all &rarr;</a>
+
+        <a href="/Courses"
+           class="fw-semibold text-decoration-none"
+           style="color: var(--primary);">
+            View all &rarr;
+        </a>
+
     </div>
+
 
     @if (!featuredCourses.Any())
     {
-        <p class="text-muted">No courses published yet — add some from the Admin panel to feature them here.</p>
+        <p class="text-muted">
+            No courses published yet — add some from the Admin panel to feature them here.
+        </p>
     }
     else
     {
         <div class="row g-4">
+
             @foreach (var course in featuredCourses)
             {
                 <div class="col-md-4">
-                    <a href="/Courses/Details/@course.Id" class="text-decoration-none">
+
+                    <a href="/Courses/Details/@course.Id"
+                       class="text-decoration-none">
+
                         <div class="course-card h-100">
+
                             <div class="course-thumb">
-                                <img src="@(string.IsNullOrEmpty(course.ThumbnailUrl) ? "https://placehold.co/400x220" : course.ThumbnailUrl)" alt="@course.Title" />
-                                <span class="course-price-badge">Rs. @course.Price</span>
+
+                                <img src="@(string.IsNullOrEmpty(course.ThumbnailUrl)
+                                    ? "https://placehold.co/400x220"
+                                    : course.ThumbnailUrl)"
+                                     alt="@course.Title" />
+
+                                <span class="course-price-badge">
+                                    Rs. @course.Price
+                                </span>
+
                             </div>
+
+
                             <div class="course-body">
-                                <div class="course-category">@course.Category?.Name</div>
-                                <h6 class="course-title">@course.Title</h6>
-                                <div class="course-instructor">By @course.InstructorName</div>
+
+                                <div class="course-category">
+                                    @course.Category?.Name
+                                </div>
+
+                                <h6 class="course-title">
+                                    @course.Title
+                                </h6>
+
+                                <div class="course-instructor">
+                                    By @course.InstructorName
+                                </div>
+
                             </div>
+
                         </div>
+
                     </a>
+
                 </div>
             }
+
         </div>
     }
+
 </section>
+
 
 <!-- ================= SKILLS ================= -->
 @if (sampleTags.Any())
 {
     <section class="py-5 px-4 my-5 text-center skills-panel">
-        <h3 class="fw-bold mb-4" style="color: var(--dark);">Learn In-demand Skills</h3>
+
+        <h3 class="fw-bold mb-4" style="color: var(--dark);">
+            Learn In-demand Skills
+        </h3>
 
         <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+
             @foreach (var tag in sampleTags)
             {
-                <a href="/Courses" class="tag-pill">@tag.Name</a>
+                <a href="/Courses" class="tag-pill">
+                    @tag.Name
+                </a>
             }
+
         </div>
 
-        <a href="/Courses" class="fw-semibold text-decoration-none" style="color: var(--primary);">Browse all skills &rarr;</a>
+        <a href="/Courses"
+           class="fw-semibold text-decoration-none"
+           style="color: var(--primary);">
+            Browse all skills &rarr;
+        </a>
+
     </section>
 }
 
+
 <style>
+
     /* ===== HERO ===== */
+
     .hero-section {
         position: relative;
         overflow: hidden;
@@ -202,54 +316,61 @@
         transition: filter 0.2s ease;
     }
 
-        .search-btn:hover {
-            filter: brightness(1.08);
-        }
-
-    /* ===== PARTNERS ===== */
-    .partner-card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        padding: 18px 24px;
-        border-radius: 16px;
-        background: white;
-        border: 1px solid #EEF0F0;
-        min-width: 120px;
-        filter: grayscale(100%);
-        opacity: 0.7;
-        transition: all 0.3s ease;
+    .search-btn:hover {
+        filter: brightness(1.08);
     }
 
-        .partner-card:hover {
-            filter: grayscale(0%);
-            opacity: 1;
-            transform: translateY(-6px);
-            box-shadow: 0 14px 28px rgba(13, 115, 100, 0.14);
-            border-color: transparent;
-        }
 
-    .partner-mark {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
+    /* ===== PARTNERS / LOGO BAR ===== */
+
+    .partner-section {
+        padding: 55px 20px;
+        text-align: center;
+        background-color: #FAFBFB;
+    }
+
+    .partner-logo-bar {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .partner-logo {
+        min-width: 145px;
+        height: 70px;
+        padding: 0 25px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 14px;
+
+        color: var(--dark);
+        font-size: 1.15rem;
         font-weight: 800;
-        font-size: 1.3rem;
+        letter-spacing: 1px;
+
+        box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+
+        transition: all 0.25s ease;
     }
 
-    .partner-name {
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        color: var(--dark);
-        font-size: 0.95rem;
+    .partner-logo:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+        color: var(--primary);
+        box-shadow: 0 12px 25px rgba(13, 115, 100, 0.15);
     }
+
 
     /* ===== CATEGORY PANEL ===== */
+
     .category-panel {
         background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
         border-radius: 24px;
@@ -266,17 +387,19 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-        .category-box:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-        }
+    .category-box:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    }
 
     .category-icon {
         font-size: 1.8rem;
         margin-bottom: 8px;
     }
 
+
     /* ===== COURSE CARDS ===== */
+
     .course-card {
         border: 1px solid #E5E7EB;
         border-radius: 16px;
@@ -285,11 +408,11 @@
         transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
 
-        .course-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 18px 36px rgba(13, 115, 100, 0.18);
-            border-color: var(--primary);
-        }
+    .course-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 36px rgba(13, 115, 100, 0.18);
+        border-color: var(--primary);
+    }
 
     .course-thumb {
         position: relative;
@@ -297,12 +420,12 @@
         overflow: hidden;
     }
 
-        .course-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
+    .course-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
 
     .course-card:hover .course-thumb img {
         transform: scale(1.08);
@@ -345,7 +468,9 @@
         color: #9CA3AF;
     }
 
+
     /* ===== SKILLS ===== */
+
     .skills-panel {
         background-color: var(--light-bg);
         border-radius: 24px;
@@ -363,10 +488,32 @@
         transition: all 0.2s ease;
     }
 
-        .tag-pill:hover {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateY(-2px);
+    .tag-pill:hover {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+
+    /* ===== MOBILE ===== */
+
+    @@media (max-width: 768px) {
+
+        .partner-logo-bar {
+            gap: 12px;
         }
+
+        .partner-logo {
+            min-width: 125px;
+            height: 60px;
+            font-size: 1rem;
+        }
+
+        .hero-section h1 {
+            font-size: 2rem !important;
+        }
+
+    }
+
 </style>
